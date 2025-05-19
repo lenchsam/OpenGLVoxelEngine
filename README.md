@@ -9,6 +9,7 @@ A voxel engine similar to minecraft coded in C++ using OpenGL.
     + [Requirements](#requirements)
     + [Setup](#setup)
   * [Future Features](#potential-future-features)
+  * [Libraries](#libraries)
 - [Contact](#contact)
 
 ## About
@@ -29,6 +30,11 @@ This is a personal project for me to further get used C++, especially with libra
 
 ## Potential Future Features
  - The actual project
+
+## Libraries
+ - GLFW
+ - GLAD
+ - stb_image.h
 # Contact
 [Portfolio](https://lenchsam.com)
 
