@@ -1,5 +1,5 @@
 # OpenGLVoxelEngine
-A voxel engine similar to minecraft coded in C++ using OpenGL.
+A voxel engine similar to minecraft coded in C++ using OpenGL. It is in early development
 ## Table of Contents
 - [OpenGLVoxelEngine](#openglvoxelengine)
   * [About](#about)
