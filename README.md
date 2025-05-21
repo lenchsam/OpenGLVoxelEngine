@@ -24,9 +24,16 @@ This is a personal project for me to further get used C++, especially with libra
 ### Requirements
 
  - Visual Studio 2022
+ - CMake
 
 ### Setup
- 1. 
+ 1. Make sure you have CMake and Visual Studio 2022 installed
+ 2. Download/Clone this repo
+ 3. Open Visual Studio
+ 4. Select "Open A Local Folder"
+ 5. Navigate to where you cloned the repository, go into the directory that has the CMakeLists.txt file and load visual studio there
+ 6. Wait for CMake to build
+ 7. Done!!
 
 ## Potential Future Features
  - The actual project
