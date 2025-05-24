@@ -13,6 +13,9 @@ set(SOURCES
     OpenGLVoxelEngine/Renderer.cpp
     OpenGLVoxelEngine/Shader.cpp
     OpenGLVoxelEngine/glad.c
+    OpenGLVoxelEngine/Camera.cpp
+    OpenGLVoxelEngine/Chunk.cpp
+    OpenGLVoxelEngine/Block.cpp
 )
 
 # Create the executable
