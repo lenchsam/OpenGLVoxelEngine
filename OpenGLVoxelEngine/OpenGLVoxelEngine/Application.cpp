@@ -192,12 +192,12 @@ int Application::run() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     // set texture filtering parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     // load image, create texture and generate mipmaps
     int width, height, nrChannels;
 	stbi_set_flip_vertically_on_load(true); //flip loaded texture's on the y-axis. stb_image flips the texturs on the y-axis by default so I need to flip it back
-    unsigned char* data = stbi_load("Textures/container.jpg", &width, &height, &nrChannels, 0);
+    unsigned char* data = stbi_load("Textures/Grass.png", &width, &height, &nrChannels, 0);
 	if (data) // if the image was loaded successfully
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
