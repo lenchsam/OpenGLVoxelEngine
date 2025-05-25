@@ -14,10 +14,10 @@ public:
 	void setBlock(int x, int y, int z, BlockID blockType);
 
 	void draw(Shader& shader, unsigned int VAO);
-private:
 	static const unsigned int CHUNK_WIDTH = 16;
 	static const unsigned int CHUNK_HEIGHT = 16;
 	static const unsigned int CHUNK_DEPTH = 16;
+private:
 
 	Block m_blocks[CHUNK_WIDTH][CHUNK_HEIGHT][CHUNK_DEPTH];
 

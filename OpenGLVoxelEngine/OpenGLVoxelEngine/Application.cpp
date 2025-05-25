@@ -11,6 +11,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "FastNoiseLite.h"
+
 #include "Chunk.h"
 
 const unsigned int SCR_WIDTH = 800;
@@ -201,6 +203,44 @@ int Application::run() {
 
     ourShader.use(); 
 
+    Chunk chunk;
+
+    FastNoiseLite noise;
+	noise.SetSeed(4);
+    noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
+	noise.SetFrequency(0.05f);
+    const float noiseThreshold = 0.0f;
+
+    const int baseSurfaceLevel = chunk.CHUNK_HEIGHT / 3; // where the average ground level will be
+    const float terrainAmplitude = (float)chunk.CHUNK_HEIGHT / 4.0f;
+
+    for (int x = 0; x < chunk.CHUNK_WIDTH; ++x) {
+        for (int z = 0; z < chunk.CHUNK_DEPTH; ++z) {
+            // add chunkWorldOffsetX and chunkWorldOffsetZ here.
+            float noiseVal = noise.GetNoise((float)x, (float)z);
+
+            int surfaceY = baseSurfaceLevel + (int)(noiseVal * terrainAmplitude);
+
+            // clamp surfaceY to be within chunk boundaries
+            if (surfaceY < 0) surfaceY = 0;
+            if (surfaceY >= chunk.CHUNK_HEIGHT) surfaceY = chunk.CHUNK_HEIGHT - 1;
+
+            for (int y = 0; y < chunk.CHUNK_HEIGHT; ++y) {
+                if (y < surfaceY) {
+                    // below surface
+                    chunk.setBlock(x, y, z, BlockID::DIRT); 
+                }
+                else if (y == surfaceY) {
+                    // surface block
+                    chunk.setBlock(x, y, z, BlockID::GRASS);
+                }
+                else {
+                    //is air block
+                }
+            }
+        }
+    }
+
     // Render loop
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = static_cast<float>(glfwGetTime());
@@ -227,7 +267,6 @@ int Application::run() {
         // render cubes
         glBindVertexArray(VAO);
 
-        Chunk chunk;
 
         // Example: make a few test blocks solid
         chunk.setBlock(0, 0, 0, BlockID::GRASS);

@@ -40,6 +40,7 @@ void Chunk::setBlock(int x, int y, int z, BlockID blockType)
 
 void Chunk::draw(Shader& shader, unsigned int VAO)
 {
+	//TO DO: OPTIMISE! 1 VBO TO DRAW ALL BLOCKS IN CHUNK
     glBindVertexArray(VAO);
 
     for (int x = 0; x < CHUNK_WIDTH; ++x) {
