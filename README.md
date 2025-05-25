@@ -8,7 +8,7 @@ A voxel engine similar to minecraft coded in C++ using OpenGL. It is in early de
   * [Getting Started](#getting-started)
     + [Requirements](#requirements)
     + [Setup](#setup)
-  * [Future Features](#potential-future-features)
+  * [Future Features](#future-features)
   * [Libraries](#libraries)
 - [Contact](#contact)
 
@@ -17,7 +17,7 @@ This is a personal project for me to further get used C++, especially with libra
 ## Useful Links
 
 ## Features
- - Nothing yet
+ - basic chunks based off a noise function
 
 ## Getting Started
 
@@ -35,13 +35,19 @@ This is a personal project for me to further get used C++, especially with libra
  6. Wait for CMake to build
  7. Done!!
 
-## Potential Future Features
- - The actual project
+## Future Features
+ - optimisations to chunk rendering
+ - optimisations such as face culling and more
+ - mesh optimisations for example greedy meshing
+ - 
 
 ## Libraries
  - GLFW
  - GLAD
  - stb_image.h
+ - GLM
+ - FastNoiseLite
+
 # Contact
 [Portfolio](https://lenchsam.com)
 
