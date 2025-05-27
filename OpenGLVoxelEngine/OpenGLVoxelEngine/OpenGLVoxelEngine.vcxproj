@@ -23,6 +23,7 @@
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Chunk.cpp" />
+    <ClCompile Include="ChunkManager.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Renderer.cpp" />
@@ -35,6 +36,7 @@
     <ClInclude Include="BlockTypes.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Chunk.h" />
+    <ClInclude Include="ChunkManager.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="TextureManager.h" />

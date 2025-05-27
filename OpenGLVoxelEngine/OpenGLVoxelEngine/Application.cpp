@@ -14,6 +14,7 @@
 #include "FastNoiseLite.h"
 
 #include "Chunk.h"
+#include "ChunkManager.h"
 
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
@@ -203,7 +204,6 @@ int Application::run() {
 
     ourShader.use(); 
 
-    Chunk chunk;
 
     FastNoiseLite noise;
 	noise.SetSeed(4);
@@ -211,35 +211,18 @@ int Application::run() {
 	noise.SetFrequency(0.05f);
     const float noiseThreshold = 0.0f;
 
-    const int baseSurfaceLevel = chunk.CHUNK_HEIGHT / 3; // where the average ground level will be
-    const float terrainAmplitude = (float)chunk.CHUNK_HEIGHT / 4.0f;
+    Chunk chunk(0, 0, 0), chunk1(1, 0, 0), chunk2(0, 0, 1), chunk3(1, 0, 1);
 
-    for (int x = 0; x < chunk.CHUNK_WIDTH; ++x) {
-        for (int z = 0; z < chunk.CHUNK_DEPTH; ++z) {
-            // add chunkWorldOffsetX and chunkWorldOffsetZ here.
-            float noiseVal = noise.GetNoise((float)x, (float)z);
+	chunk.GenerateMesh(&noise);
+	chunk1.GenerateMesh(&noise);
+	chunk2.GenerateMesh(&noise);
+	chunk3.GenerateMesh(&noise);
 
-            int surfaceY = baseSurfaceLevel + (int)(noiseVal * terrainAmplitude);
-
-            // clamp surfaceY to be within chunk boundaries
-            if (surfaceY < 0) surfaceY = 0;
-            if (surfaceY >= chunk.CHUNK_HEIGHT) surfaceY = chunk.CHUNK_HEIGHT - 1;
-
-            for (int y = 0; y < chunk.CHUNK_HEIGHT; ++y) {
-                if (y < surfaceY) {
-                    // below surface
-                    chunk.setBlock(x, y, z, BlockID::DIRT); 
-                }
-                else if (y == surfaceY) {
-                    // surface block
-                    chunk.setBlock(x, y, z, BlockID::GRASS);
-                }
-                else {
-                    //is air block
-                }
-            }
-        }
-    }
+    ChunkManager chunkManager;
+	chunkManager.AddChunk(&chunk);
+	chunkManager.AddChunk(&chunk1);
+	chunkManager.AddChunk(&chunk2);
+	chunkManager.AddChunk(&chunk3);
 
     // Render loop
     while (!glfwWindowShouldClose(window)) {
@@ -267,14 +250,8 @@ int Application::run() {
         // render cubes
         glBindVertexArray(VAO);
 
-
-        // Example: make a few test blocks solid
-        chunk.setBlock(0, 0, 0, BlockID::GRASS);
-        chunk.setBlock(1, 0, 0, BlockID::GRASS);
-        chunk.setBlock(2, 0, 0, BlockID::GRASS);
-
         // Inside render loop
-        chunk.draw(ourShader, VAO);
+		chunkManager.RenderChunks(ourShader, VAO);
 
 
         glfwSwapBuffers(window);
