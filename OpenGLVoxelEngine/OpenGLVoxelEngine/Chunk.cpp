@@ -1,8 +1,5 @@
 #include "Chunk.h"
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
 #include "FastNoiseLite.h"
 
 #include "BlockTypes.h"
@@ -39,31 +36,6 @@ void Chunk::setBlock(int x, int y, int z, BlockID blockType)
 	m_blocks[x][y][z].SetBlockType(blockType);
 }
 
-void Chunk::draw(Shader& shader, unsigned int VAO)
-{
-	//TO DO: OPTIMISE! 1 VBO TO DRAW ALL BLOCKS IN CHUNK
-    glBindVertexArray(VAO);
-
-    for (int x = 0; x < CHUNK_WIDTH; ++x) {
-        for (int y = 0; y < CHUNK_HEIGHT; ++y) {
-            for (int z = 0; z < CHUNK_DEPTH; ++z) {
-                const Block& block = m_blocks[x][y][z];
-                if (!block.IsActive() || block.GetBlockType() == BlockID::AIR) {
-                    continue;
-                }
-
-                glm::mat4 model = glm::mat4(1.0f);
-                model = glm::translate(model, glm::vec3(x + (m_x * CHUNK_WIDTH), y + (m_y * CHUNK_HEIGHT), z + (m_z * CHUNK_DEPTH)));
-                shader.setMat4("model", model);
-
-                glDrawArrays(GL_TRIANGLES, 0, 36);
-            }
-        }
-    }
-
-    glBindVertexArray(0);
-}
-
 void Chunk::GenerateMesh(FastNoiseLite* noise)
 {
     const int baseSurfaceLevel = CHUNK_HEIGHT / 3; // where the average ground level will be
@@ -95,4 +67,75 @@ void Chunk::GenerateMesh(FastNoiseLite* noise)
             }
         }
     }
+
+    m_needsRebuild = true;
+}
+
+void Chunk::BuildRenderData() {
+    if (!m_needsRebuild) return;
+
+    m_instancePositions.clear();
+    for (int x = 0; x < CHUNK_WIDTH; ++x) {
+        for (int y = 0; y < CHUNK_HEIGHT; ++y) {
+            for (int z = 0; z < CHUNK_DEPTH; ++z) {
+                const Block& block = m_blocks[x][y][z];
+                if (block.IsActive() && block.GetBlockType() != BlockID::AIR) {
+                    // TODO: implement face culling here later for optimization.
+                    m_instancePositions.push_back(glm::vec3(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z)));
+                }
+            }
+        }
+    }
+
+    if (m_instanceVBO == 0 && !m_instancePositions.empty()) {
+        glGenBuffers(1, &m_instanceVBO);
+    }
+
+    if (!m_instancePositions.empty()) {
+        glBindBuffer(GL_ARRAY_BUFFER, m_instanceVBO);
+        glBufferData(GL_ARRAY_BUFFER, m_instancePositions.size() * sizeof(glm::vec3), m_instancePositions.data(), GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+    else if (m_instanceVBO != 0) { // No instances, but VBO exists, clean it up or leave empty
+        glBindBuffer(GL_ARRAY_BUFFER, m_instanceVBO);
+        glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+    m_needsRebuild = false;
+}
+
+void Chunk::DrawInstanced(Shader& shader, GLuint VAO) {
+    if (m_needsRebuild) {
+        BuildRenderData();
+    }
+
+    if (m_instancePositions.empty()) {
+        return; 
+    }
+
+    // Set the model matrix for the entire chunk
+    glm::mat4 chunkModelMatrix = glm::mat4(1.0f);
+    chunkModelMatrix = glm::translate(chunkModelMatrix, glm::vec3(
+        static_cast<float>(m_x * CHUNK_WIDTH),
+        static_cast<float>(m_y * CHUNK_HEIGHT),
+        static_cast<float>(m_z * CHUNK_DEPTH)
+    ));
+    shader.setMat4("model", chunkModelMatrix);
+
+    glBindVertexArray(VAO);
+
+    // Enable and configure the per-instance position attribute (aInstancePos)
+    // This uses the chunk's specific m_instanceVBO
+    glBindBuffer(GL_ARRAY_BUFFER, m_instanceVBO);
+    glEnableVertexAttribArray(2); // Location 2 for aInstancePos
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+    glVertexAttribDivisor(2, 1);
+
+    // Draw all instances of the block for this chunk
+    glDrawArraysInstanced(GL_TRIANGLES, 0, 36, static_cast<GLsizei>(m_instancePositions.size()));
+
+    glVertexAttribDivisor(2, 0);
+    glDisableVertexAttribArray(2);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
 }

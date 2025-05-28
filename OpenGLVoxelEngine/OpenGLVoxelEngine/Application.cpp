@@ -206,8 +206,6 @@ int Application::run() {
 
         // render cubes
         glBindVertexArray(VAO);
-
-        // Inside render loop
 		chunkManager.RenderChunks(ourShader, VAO);
 
 

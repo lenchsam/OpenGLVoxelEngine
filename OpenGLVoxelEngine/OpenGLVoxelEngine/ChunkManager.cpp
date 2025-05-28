@@ -14,9 +14,8 @@ void ChunkManager::RenderChunks(Shader& shader, unsigned int VAO)
 {
 	for(Chunk* chunk : m_chunks)
 	{
-		//if(chunk->IsVisible())
-		//{
-			chunk->draw(shader, VAO);
-		//}
+		chunk->DrawInstanced(shader, VAO);
 	}
 }
+
+
