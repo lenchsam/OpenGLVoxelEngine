@@ -68,49 +68,6 @@ void Application::processInput(GLFWwindow* window) {
 }
 
 int Application::run() {
-    if (!glfwInit()) {
-        std::cerr << "Failed to initialize GLFW" << std::endl;
-        return -1;
-    }
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-#ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
-
-    //create window
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
-    if (window == NULL) {
-        std::cerr << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-        return -1;
-    }
-
-    glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    glfwSetCursorPosCallback(window, mouse_callback);
-
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-    // Initialize GLAD
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        std::cerr << "Failed to initialize GLAD" << std::endl;
-        glfwTerminate();
-        return -1;
-    }
-
-    // Output the version of OpenGL for debugging
-    std::cout << "Initialized OpenGL version: " << glGetString(GL_VERSION) << std::endl;
-
-    int screenWidth, screenHeight;
-    glfwGetFramebufferSize(window, &screenWidth, &screenHeight);
-    glViewport(0, 0, screenWidth, screenHeight);
-
-    //---------------------------------------------------------------------------------------------
-
     glEnable(GL_DEPTH_TEST);
 
     //shader
@@ -206,7 +163,7 @@ int Application::run() {
 
 
     FastNoiseLite noise;
-	noise.SetSeed(4);
+	noise.SetSeed(2);
     noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
 	noise.SetFrequency(0.05f);
     const float noiseThreshold = 0.0f;
@@ -260,4 +217,48 @@ int Application::run() {
 
     glfwTerminate();
     return 0;
+}
+
+void Application::init()
+{
+    if (!glfwInit()) {
+        std::cerr << "Failed to initialize GLFW" << std::endl;
+        return;
+    }
+
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
+
+    //create window
+    window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+    if (window == NULL) {
+        std::cerr << "Failed to create GLFW window" << std::endl;
+        glfwTerminate();
+        return;
+    }
+
+    glfwMakeContextCurrent(window);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetCursorPosCallback(window, mouse_callback);
+
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+    // Initialize GLAD
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        std::cerr << "Failed to initialize GLAD" << std::endl;
+        glfwTerminate();
+        return;
+    }
+
+    // Output the version of OpenGL for debugging
+    std::cout << "Initialized OpenGL version: " << glGetString(GL_VERSION) << std::endl;
+
+    int screenWidth, screenHeight;
+    glfwGetFramebufferSize(window, &screenWidth, &screenHeight);
+    glViewport(0, 0, screenWidth, screenHeight);
 }

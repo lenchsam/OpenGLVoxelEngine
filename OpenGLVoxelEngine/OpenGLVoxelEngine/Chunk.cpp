@@ -71,7 +71,7 @@ void Chunk::GenerateMesh(FastNoiseLite* noise)
 
     for (int x = 0; x < CHUNK_WIDTH; ++x) {
         for (int z = 0; z < CHUNK_DEPTH; ++z) {
-            // add chunkWorldOffsetX and chunkWorldOffsetZ here.
+			//chunk offset needed because noise is generated in world space, will be smooth across chunks.
             float noiseVal = noise->GetNoise((float)x + (m_x * CHUNK_WIDTH), (float)z + (m_z * CHUNK_DEPTH));
 
             int surfaceY = baseSurfaceLevel + (int)(noiseVal * terrainAmplitude);
