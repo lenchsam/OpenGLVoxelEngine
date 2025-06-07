@@ -7,7 +7,6 @@ A voxel engine similar to minecraft coded in C++ using OpenGL. It is in early de
   * [Features](#features)
   * [Getting Started](#getting-started)
     + [Requirements](#requirements)
-    + [Setup](#setup)
   * [Future Features](#future-features)
   * [Libraries](#libraries)
 - [Contact](#contact)
@@ -18,28 +17,20 @@ This is a personal project for me to further get used C++, especially with libra
 
 ## Features
  - basic chunks based off a noise function
+ - Face culling
+ - camera system
+ - 
 
 ## Getting Started
 
 ### Requirements
 
  - Visual Studio 2022
- - CMake
-
-### Setup
- 1. Make sure you have CMake and Visual Studio 2022 installed
- 2. Download/Clone this repo
- 3. Open Visual Studio
- 4. Select "Open A Local Folder"
- 5. Navigate to where you cloned the repository, go into the directory that has the CMakeLists.txt file and load visual studio there
- 6. Wait for CMake to build
- 7. Done!!
 
 ## Future Features
- - optimisations to chunk rendering
- - optimisations such as face culling and more
  - mesh optimisations for example greedy meshing
- - 
+ - Implement dynamic chunk generation at runtime for infinite worlds
+ - Lighting
 
 ## Libraries
  - GLFW
