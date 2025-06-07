@@ -4,8 +4,8 @@
 class Application
 {
 public:
+	Application();
 	int run();
-	void init();
 private:
 	static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 	void processInput(GLFWwindow* window);

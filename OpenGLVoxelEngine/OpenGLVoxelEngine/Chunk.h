@@ -23,21 +23,23 @@ public:
 	
 	glm::vec3 getPosition();
 
-	void BuildRenderData();
-	void DrawInstanced(Shader& shader, GLuint sharedBlockMeshVAO);
+	void Draw(Shader& shader);
 
 	static const unsigned int CHUNK_WIDTH = 16;
 	static const unsigned int CHUNK_HEIGHT = 16;
 	static const unsigned int CHUNK_DEPTH = 16;
 
 private:
+	void BuildMesh();
+	bool isSolid(int x, int y, int z) const;
 
 	int m_x, m_y, m_z; // Position of the chunk in the world
 	Block m_blocks[CHUNK_WIDTH][CHUNK_HEIGHT][CHUNK_DEPTH];
 
-	GLuint m_instanceVBO = 0; // VBO for this chunks instance positions
-	std::vector<glm::vec3> m_instancePositions; // positions of blocks to render local to chunk
-	bool m_needsRebuild = true;
+    std::vector<float> m_meshVertices;
+    GLuint m_VAO = 0, m_VBO = 0;
+
+    bool m_needsRebuild = true;
 
 };
 

@@ -7,8 +7,9 @@ class ChunkManager
 {
 public:
 	void AddChunk(Chunk* chunk);
-	void RenderChunks(Shader& shader, unsigned int VAO);
+	void RenderChunks(Shader& shader);
 private:
+	
 	std::vector<Chunk*> m_chunks;
 };
 

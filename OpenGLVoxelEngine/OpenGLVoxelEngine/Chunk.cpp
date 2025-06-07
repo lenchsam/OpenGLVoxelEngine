@@ -6,7 +6,55 @@
 #include "Block.h"
 #include "Shader.h"
 
+constexpr float faceVertices[] = {
+    //-Z (Back) face
+    0.0f, 0.0f, 0.0f,  0.0f, 0.0f,
+    1.0f, 0.0f, 0.0f,  1.0f, 0.0f,
+    1.0f, 1.0f, 0.0f,  1.0f, 1.0f,
+    1.0f, 1.0f, 0.0f,  1.0f, 1.0f,
+    0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
+    0.0f, 0.0f, 0.0f,  0.0f, 0.0f,
 
+    //+Z (Front) face
+    0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
+    1.0f, 1.0f, 1.0f,  1.0f, 1.0f,
+    1.0f, 0.0f, 1.0f,  1.0f, 0.0f,
+    1.0f, 1.0f, 1.0f,  1.0f, 1.0f,
+    0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
+    0.0f, 1.0f, 1.0f,  0.0f, 1.0f,
+
+    //-X (Left) face
+    0.0f, 1.0f, 1.0f,  1.0f, 1.0f,
+    0.0f, 0.0f, 0.0f,  0.0f, 0.0f,
+    0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
+    0.0f, 0.0f, 0.0f,  0.0f, 0.0f,
+    0.0f, 1.0f, 1.0f,  1.0f, 1.0f,
+    0.0f, 0.0f, 1.0f,  0.0f, 1.0f,
+
+    //+X (Right) face
+    1.0f, 1.0f, 1.0f,  1.0f, 1.0f,
+    1.0f, 1.0f, 0.0f,  1.0f, 0.0f,
+    1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
+    1.0f, 0.0f, 1.0f,  0.0f, 1.0f,
+    1.0f, 1.0f, 1.0f,  1.0f, 1.0f,
+    1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
+
+    //-Y (Bottom) face
+    0.0f, 0.0f, 0.0f,  0.0f, 1.0f,
+    1.0f, 0.0f, 1.0f,  1.0f, 0.0f,
+    1.0f, 0.0f, 0.0f,  1.0f, 1.0f,
+    1.0f, 0.0f, 1.0f,  1.0f, 0.0f,
+    0.0f, 0.0f, 0.0f,  0.0f, 1.0f,
+    0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
+
+    //+Y (Top) face
+    0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
+    1.0f, 1.0f, 0.0f,  1.0f, 1.0f,
+    1.0f, 1.0f, 1.0f,  1.0f, 0.0f,
+    0.0f, 1.0f, 1.0f,  0.0f, 0.0f,
+    0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
+    1.0f, 1.0f, 1.0f,  1.0f, 0.0f
+};
 Chunk::Chunk(int _x, int _y, int _z) : m_x(_x), m_y(_y), m_z(_z)
 {
 	// Initialize the chunk with air blocks
@@ -21,11 +69,27 @@ Chunk::Chunk(int _x, int _y, int _z) : m_x(_x), m_y(_y), m_z(_z)
 
 Chunk::~Chunk()
 {
+    if (m_VAO != 0) {
+        glDeleteVertexArrays(1, &m_VAO);
+        glDeleteBuffers(1, &m_VBO);
+    }
 }
 
 BlockID Chunk::getBlock(int x, int y, int z) const {
-	//returns air as placeholder
-	return BlockID::AIR;
+	// out of bounds check
+    if (x < 0 || x >= CHUNK_WIDTH || y < 0 || y >= CHUNK_HEIGHT || z < 0 || z >= CHUNK_DEPTH) {
+        return BlockID::AIR;
+    }
+
+    if (!m_blocks[x][y][z].IsActive()) {
+        return BlockID::AIR;
+    }
+
+    return m_blocks[x][y][z].GetBlockType();
+}
+
+bool Chunk::isSolid(int x, int y, int z) const {
+    return getBlock(x, y, z) != BlockID::AIR;
 }
 
 void Chunk::setBlock(int x, int y, int z, BlockID blockType)
@@ -71,71 +135,131 @@ void Chunk::GenerateMesh(FastNoiseLite* noise)
     m_needsRebuild = true;
 }
 
-void Chunk::BuildRenderData() {
-    if (!m_needsRebuild) return;
+void Chunk::Draw(Shader& shader) {
+    if (m_needsRebuild) {
+        BuildMesh();
+    }
 
-    m_instancePositions.clear();
-    for (int x = 0; x < CHUNK_WIDTH; ++x) {
-        for (int y = 0; y < CHUNK_HEIGHT; ++y) {
+    if (m_VAO == 0 || m_meshVertices.empty()) {
+        return; // Nothing to draw
+    }
+
+    glm::mat4 chunkModelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(
+        static_cast<float>(m_x * CHUNK_WIDTH),
+        static_cast<float>(m_y * CHUNK_HEIGHT), // This is useful for vertical chunks
+        static_cast<float>(m_z * CHUNK_DEPTH)
+    ));
+    shader.setMat4("model", chunkModelMatrix);
+
+    glBindVertexArray(m_VAO);
+    glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(m_meshVertices.size() / 5));
+    glBindVertexArray(0);
+}
+
+void Chunk::BuildMesh()
+{
+    m_meshVertices.clear();
+
+    for (int y = 0; y < CHUNK_HEIGHT; ++y) {
+        for (int x = 0; x < CHUNK_WIDTH; ++x) {
             for (int z = 0; z < CHUNK_DEPTH; ++z) {
-                const Block& block = m_blocks[x][y][z];
-                if (block.IsActive() && block.GetBlockType() != BlockID::AIR) {
-                    // TODO: implement face culling here later for optimization.
-                    m_instancePositions.push_back(glm::vec3(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z)));
+                if (!isSolid(x, y, z)) {
+                    continue; //skip air blocks
+                }
+
+                // The offset for each face is its index (0-5) times 30 (6 vertices * 5 floats).
+                // Example for Back Face (-Z): face index 0, offset = 0 * 30 = 0
+                // Example for Front Face (+Z): face index 1, offset = 1 * 30 = 30
+                // etc.
+
+                //check each of the 6 faces
+                //back
+                if (!isSolid(x, y, z - 1)) {
+                    for (int i = 0; i < 6; ++i) { // 6 vertices per face
+                        m_meshVertices.push_back(faceVertices[0 * 30 + i * 5 + 0] + x);
+                        m_meshVertices.push_back(faceVertices[0 * 30 + i * 5 + 1] + y);
+                        m_meshVertices.push_back(faceVertices[0 * 30 + i * 5 + 2] + z);
+                        m_meshVertices.push_back(faceVertices[0 * 30 + i * 5 + 3]);
+                        m_meshVertices.push_back(faceVertices[0 * 30 + i * 5 + 4]);
+                    }
+                }
+                //front
+                if (!isSolid(x, y, z + 1)) {
+                    for (int i = 0; i < 6; ++i) {
+                        m_meshVertices.push_back(faceVertices[1 * 30 + i * 5 + 0] + x);
+                        m_meshVertices.push_back(faceVertices[1 * 30 + i * 5 + 1] + y);
+                        m_meshVertices.push_back(faceVertices[1 * 30 + i * 5 + 2] + z);
+                        m_meshVertices.push_back(faceVertices[1 * 30 + i * 5 + 3]);
+                        m_meshVertices.push_back(faceVertices[1 * 30 + i * 5 + 4]);
+                    }
+                }
+                //left
+                if (!isSolid(x - 1, y, z)) {
+                    for (int i = 0; i < 6; ++i) {
+                        m_meshVertices.push_back(faceVertices[2 * 30 + i * 5 + 0] + x);
+                        m_meshVertices.push_back(faceVertices[2 * 30 + i * 5 + 1] + y);
+                        m_meshVertices.push_back(faceVertices[2 * 30 + i * 5 + 2] + z);
+                        m_meshVertices.push_back(faceVertices[2 * 30 + i * 5 + 3]);
+                        m_meshVertices.push_back(faceVertices[2 * 30 + i * 5 + 4]);
+                    }
+                }
+                //right
+                if (!isSolid(x + 1, y, z)) {
+                    for (int i = 0; i < 6; ++i) {
+                        m_meshVertices.push_back(faceVertices[3 * 30 + i * 5 + 0] + x);
+                        m_meshVertices.push_back(faceVertices[3 * 30 + i * 5 + 1] + y);
+                        m_meshVertices.push_back(faceVertices[3 * 30 + i * 5 + 2] + z);
+                        m_meshVertices.push_back(faceVertices[3 * 30 + i * 5 + 3]);
+                        m_meshVertices.push_back(faceVertices[3 * 30 + i * 5 + 4]);
+                    }
+                }
+                //bottom
+                if (!isSolid(x, y - 1, z)) {
+                    for (int i = 0; i < 6; ++i) {
+                        m_meshVertices.push_back(faceVertices[4 * 30 + i * 5 + 0] + x);
+                        m_meshVertices.push_back(faceVertices[4 * 30 + i * 5 + 1] + y);
+                        m_meshVertices.push_back(faceVertices[4 * 30 + i * 5 + 2] + z);
+                        m_meshVertices.push_back(faceVertices[4 * 30 + i * 5 + 3]);
+                        m_meshVertices.push_back(faceVertices[4 * 30 + i * 5 + 4]);
+                    }
+                }
+                //top
+                if (!isSolid(x, y + 1, z)) {
+                    for (int i = 0; i < 6; ++i) {
+                        m_meshVertices.push_back(faceVertices[5 * 30 + i * 5 + 0] + x);
+                        m_meshVertices.push_back(faceVertices[5 * 30 + i * 5 + 1] + y);
+                        m_meshVertices.push_back(faceVertices[5 * 30 + i * 5 + 2] + z);
+                        m_meshVertices.push_back(faceVertices[5 * 30 + i * 5 + 3]);
+                        m_meshVertices.push_back(faceVertices[5 * 30 + i * 5 + 4]);
+                    }
                 }
             }
         }
     }
 
-    if (m_instanceVBO == 0 && !m_instancePositions.empty()) {
-        glGenBuffers(1, &m_instanceVBO);
+    if (m_meshVertices.empty()) {
+        m_needsRebuild = false;
+        return;
     }
 
-    if (!m_instancePositions.empty()) {
-        glBindBuffer(GL_ARRAY_BUFFER, m_instanceVBO);
-        glBufferData(GL_ARRAY_BUFFER, m_instancePositions.size() * sizeof(glm::vec3), m_instancePositions.data(), GL_STATIC_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-    }
-    else if (m_instanceVBO != 0) { // No instances, but VBO exists, clean it up or leave empty
-        glBindBuffer(GL_ARRAY_BUFFER, m_instanceVBO);
-        glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_STATIC_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-    }
-    m_needsRebuild = false;
-}
-
-void Chunk::DrawInstanced(Shader& shader, GLuint VAO) {
-    if (m_needsRebuild) {
-        BuildRenderData();
+    //create or update GPU buffers
+    if (m_VAO == 0) {
+        glGenVertexArrays(1, &m_VAO);
+        glGenBuffers(1, &m_VBO);
     }
 
-    if (m_instancePositions.empty()) {
-        return; 
-    }
+    glBindVertexArray(m_VAO);
 
-    // Set the model matrix for the entire chunk
-    glm::mat4 chunkModelMatrix = glm::mat4(1.0f);
-    chunkModelMatrix = glm::translate(chunkModelMatrix, glm::vec3(
-        static_cast<float>(m_x * CHUNK_WIDTH),
-        static_cast<float>(m_y * CHUNK_HEIGHT),
-        static_cast<float>(m_z * CHUNK_DEPTH)
-    ));
-    shader.setMat4("model", chunkModelMatrix);
+    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+    glBufferData(GL_ARRAY_BUFFER, m_meshVertices.size() * sizeof(float), m_meshVertices.data(), GL_STATIC_DRAW);
 
-    glBindVertexArray(VAO);
+    // Position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    // Texture coord attribute
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
-    // Enable and configure the per-instance position attribute (aInstancePos)
-    // This uses the chunk's specific m_instanceVBO
-    glBindBuffer(GL_ARRAY_BUFFER, m_instanceVBO);
-    glEnableVertexAttribArray(2); // Location 2 for aInstancePos
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
-    glVertexAttribDivisor(2, 1);
-
-    // Draw all instances of the block for this chunk
-    glDrawArraysInstanced(GL_TRIANGLES, 0, 36, static_cast<GLsizei>(m_instancePositions.size()));
-
-    glVertexAttribDivisor(2, 0);
-    glDisableVertexAttribArray(2);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
+    m_needsRebuild = false;
 }

@@ -10,12 +10,11 @@ void ChunkManager::AddChunk(Chunk* chunk)
 	m_chunks.push_back(chunk);
 }
 
-void ChunkManager::RenderChunks(Shader& shader, unsigned int VAO)
+void ChunkManager::RenderChunks(Shader& shader)
 {
-	for(Chunk* chunk : m_chunks)
-	{
-		chunk->DrawInstanced(shader, VAO);
-	}
+    for (Chunk* chunk : m_chunks) {
+        chunk->Draw(shader);
+    }
 }
 
 
