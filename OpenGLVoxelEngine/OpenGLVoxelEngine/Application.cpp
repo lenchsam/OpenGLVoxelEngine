@@ -152,7 +152,7 @@ int Application::run() {
 	noise.SetFrequency(0.05f);
     const float noiseThreshold = 0.0f;
 
-    Chunk chunk(0, 0, 0), chunk1(1, 0, 0), chunk2(0, 0, 1), chunk3(1, 0, 1);
+    Chunk chunk(0, 0), chunk1(1, 0), chunk2(0, 1), chunk3(1, 1);
 
 	chunk.GenerateMesh(&noise);
 	chunk1.GenerateMesh(&noise);
@@ -180,15 +180,14 @@ int Application::run() {
         glBindTexture(GL_TEXTURE_2D, texture1);
 
         ourShader.use();
-
+        
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         ourShader.setMat4("projection", projection);
 
         glm::mat4 view = camera.GetViewMatrix();
         ourShader.setMat4("view", view);
 
-        // This call is now much simpler
-        chunkManager.RenderChunks(ourShader); // No longer pass VAO
+        chunkManager.RenderChunks(ourShader);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

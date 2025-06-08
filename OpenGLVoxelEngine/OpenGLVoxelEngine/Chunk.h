@@ -12,7 +12,7 @@ class FastNoiseLite;
 class Chunk
 {
 public:
-	Chunk(int _x, int _y, int _z);
+	Chunk(int _x, int _z);
 	~Chunk();
 
 	//void Update(float deltaTime);
@@ -21,7 +21,7 @@ public:
 
 	void GenerateMesh(FastNoiseLite* noise);
 	
-	glm::vec3 getPosition();
+	glm::ivec2 getPosition();
 
 	void Draw(Shader& shader);
 
@@ -33,7 +33,7 @@ private:
 	void BuildMesh();
 	bool isSolid(int x, int y, int z) const;
 
-	int m_x, m_y, m_z; // Position of the chunk in the world
+	int m_x, m_z; // Position of the chunk in the world
 	Block m_blocks[CHUNK_WIDTH][CHUNK_HEIGHT][CHUNK_DEPTH];
 
     std::vector<float> m_meshVertices;

@@ -7,7 +7,7 @@
 #include "Shader.h"
 
 constexpr float faceVertices[] = {
-    //-Z (Back) face
+    //back
     0.0f, 0.0f, 0.0f,  0.0f, 0.0f,
     1.0f, 0.0f, 0.0f,  1.0f, 0.0f,
     1.0f, 1.0f, 0.0f,  1.0f, 1.0f,
@@ -15,7 +15,7 @@ constexpr float faceVertices[] = {
     0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
     0.0f, 0.0f, 0.0f,  0.0f, 0.0f,
 
-    //+Z (Front) face
+    //front
     0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
     1.0f, 1.0f, 1.0f,  1.0f, 1.0f,
     1.0f, 0.0f, 1.0f,  1.0f, 0.0f,
@@ -23,7 +23,7 @@ constexpr float faceVertices[] = {
     0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
     0.0f, 1.0f, 1.0f,  0.0f, 1.0f,
 
-    //-X (Left) face
+    //left
     0.0f, 1.0f, 1.0f,  1.0f, 1.0f,
     0.0f, 0.0f, 0.0f,  0.0f, 0.0f,
     0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
@@ -31,7 +31,7 @@ constexpr float faceVertices[] = {
     0.0f, 1.0f, 1.0f,  1.0f, 1.0f,
     0.0f, 0.0f, 1.0f,  0.0f, 1.0f,
 
-    //+X (Right) face
+    //right
     1.0f, 1.0f, 1.0f,  1.0f, 1.0f,
     1.0f, 1.0f, 0.0f,  1.0f, 0.0f,
     1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
@@ -39,7 +39,7 @@ constexpr float faceVertices[] = {
     1.0f, 1.0f, 1.0f,  1.0f, 1.0f,
     1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
 
-    //-Y (Bottom) face
+    //bottom
     0.0f, 0.0f, 0.0f,  0.0f, 1.0f,
     1.0f, 0.0f, 1.0f,  1.0f, 0.0f,
     1.0f, 0.0f, 0.0f,  1.0f, 1.0f,
@@ -47,7 +47,7 @@ constexpr float faceVertices[] = {
     0.0f, 0.0f, 0.0f,  0.0f, 1.0f,
     0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
 
-    //+Y (Top) face
+    //top
     0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
     1.0f, 1.0f, 0.0f,  1.0f, 1.0f,
     1.0f, 1.0f, 1.0f,  1.0f, 0.0f,
@@ -55,9 +55,9 @@ constexpr float faceVertices[] = {
     0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
     1.0f, 1.0f, 1.0f,  1.0f, 0.0f
 };
-Chunk::Chunk(int _x, int _y, int _z) : m_x(_x), m_y(_y), m_z(_z)
+Chunk::Chunk(int _x, int _z) : m_x(_x), m_z(_z)
 {
-	// Initialize the chunk with air blocks
+	//initialize the chunk with air blocks
 	for (int x = 0; x < CHUNK_WIDTH; ++x) {
 		for (int y = 0; y < CHUNK_HEIGHT; ++y) {
 			for (int z = 0; z < CHUNK_DEPTH; ++z) {
@@ -135,6 +135,11 @@ void Chunk::GenerateMesh(FastNoiseLite* noise)
     m_needsRebuild = true;
 }
 
+glm::ivec2 Chunk::getPosition()
+{
+    return glm::ivec2(m_x, m_z);
+}
+
 void Chunk::Draw(Shader& shader) {
     if (m_needsRebuild) {
         BuildMesh();
@@ -146,7 +151,7 @@ void Chunk::Draw(Shader& shader) {
 
     glm::mat4 chunkModelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(
         static_cast<float>(m_x * CHUNK_WIDTH),
-        static_cast<float>(m_y * CHUNK_HEIGHT), // This is useful for vertical chunks
+        0.0f, //not doing vertical chunks
         static_cast<float>(m_z * CHUNK_DEPTH)
     ));
     shader.setMat4("model", chunkModelMatrix);
@@ -167,10 +172,7 @@ void Chunk::BuildMesh()
                     continue; //skip air blocks
                 }
 
-                // The offset for each face is its index (0-5) times 30 (6 vertices * 5 floats).
-                // Example for Back Face (-Z): face index 0, offset = 0 * 30 = 0
-                // Example for Front Face (+Z): face index 1, offset = 1 * 30 = 30
-                // etc.
+                // The offset for each face is its index (0-5) x 30 (6 vertices * 5 floats).
 
                 //check each of the 6 faces
                 //back
