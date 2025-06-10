@@ -6,6 +6,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "Shader.h"
 
+ChunkManager::~ChunkManager()
+{
+    for (Chunk* chunk : m_chunks) {
+        delete chunk;
+    }
+    m_chunks.clear();
+}
+
 void ChunkManager::AddChunk(Chunk* chunk)
 {
     m_chunks.push_back(chunk);

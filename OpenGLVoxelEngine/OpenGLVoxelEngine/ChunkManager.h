@@ -9,6 +9,7 @@ class ChunkManager
 {
 public:
 	ChunkManager(FastNoiseLite* noise, Camera* camera) : m_noise(noise), m_camera(camera) {}
+	~ChunkManager();
 	void AddChunk(Chunk* chunk);
 	void UnloadChunk(Chunk* chunk);
 	void RenderChunks(Shader& shader);

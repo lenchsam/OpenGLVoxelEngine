@@ -111,8 +111,10 @@ Application::Application()
     glViewport(0, 0, screenWidth, screenHeight);
 
     glEnable(GL_DEPTH_TEST);
+
+    //face culling
     glEnable(GL_CULL_FACE);
-    glCullFace(GL_FRONT);
+    glCullFace(GL_BACK);
 }
 
 int Application::run() {

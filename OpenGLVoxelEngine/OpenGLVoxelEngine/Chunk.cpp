@@ -7,52 +7,53 @@
 #include "Shader.h"
 
 constexpr float faceVertices[] = {
-    0.0f, 0.0f, 0.0f,
+    //back
     1.0f, 0.0f, 0.0f,
-    1.0f, 1.0f, 0.0f,
-    1.0f, 1.0f, 0.0f,
-    0.0f, 1.0f, 0.0f,
     0.0f, 0.0f, 0.0f,
+    0.0f, 1.0f, 0.0f,
+    0.0f, 1.0f, 0.0f,
+    1.0f, 1.0f, 0.0f,
+    1.0f, 0.0f, 0.0f,
 
-    // Front face
+    //front
     0.0f, 0.0f, 1.0f,
-    1.0f, 1.0f, 1.0f,
     1.0f, 0.0f, 1.0f,
     1.0f, 1.0f, 1.0f,
-    0.0f, 0.0f, 1.0f,
-    0.0f, 1.0f, 1.0f,
-
-    // Left face
-    0.0f, 1.0f, 1.0f,
-    0.0f, 0.0f, 0.0f,
-    0.0f, 1.0f, 0.0f,
-    0.0f, 0.0f, 0.0f,
+    1.0f, 1.0f, 1.0f,
     0.0f, 1.0f, 1.0f,
     0.0f, 0.0f, 1.0f,
 
-    // Right face
-    1.0f, 1.0f, 1.0f,
-    1.0f, 1.0f, 0.0f,
-    1.0f, 0.0f, 0.0f,
-    1.0f, 0.0f, 1.0f,
-    1.0f, 1.0f, 1.0f,
-    1.0f, 0.0f, 0.0f,
-
-    // Bottom face
-    0.0f, 0.0f, 0.0f,
-    1.0f, 0.0f, 1.0f,
-    1.0f, 0.0f, 0.0f,
-    1.0f, 0.0f, 1.0f,
-    0.0f, 0.0f, 0.0f,
-    0.0f, 0.0f, 1.0f,
-
-    // Top face
-    0.0f, 1.0f, 0.0f,
-    1.0f, 1.0f, 0.0f,
-    1.0f, 1.0f, 1.0f,
+    //left
     0.0f, 1.0f, 1.0f,
     0.0f, 1.0f, 0.0f,
+    0.0f, 0.0f, 0.0f,
+    0.0f, 0.0f, 0.0f,
+    0.0f, 0.0f, 1.0f,
+    0.0f, 1.0f, 1.0f,
+
+    //right
+    1.0f, 1.0f, 0.0f,
     1.0f, 1.0f, 1.0f,
+    1.0f, 0.0f, 1.0f,
+    1.0f, 0.0f, 1.0f,
+    1.0f, 0.0f, 0.0f,
+    1.0f, 1.0f, 0.0f,
+
+    //bottom
+    0.0f, 0.0f, 0.0f,
+    1.0f, 0.0f, 0.0f,
+    1.0f, 0.0f, 1.0f,
+    1.0f, 0.0f, 1.0f,
+    0.0f, 0.0f, 1.0f,
+    0.0f, 0.0f, 0.0f,
+
+    //top
+    0.0f, 1.0f, 1.0f,
+    1.0f, 1.0f, 1.0f,
+    1.0f, 1.0f, 0.0f,
+    1.0f, 1.0f, 0.0f,
+    0.0f, 1.0f, 0.0f,
+    0.0f, 1.0f, 1.0f
 };
 Chunk::Chunk(int _x, int _z) : m_x(_x), m_z(_z)
 {
@@ -149,9 +150,9 @@ void Chunk::Draw(Shader& shader) {
     }
 
     glm::mat4 chunkModelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(
-        static_cast<float>(m_x * CHUNK_WIDTH),
+        static_cast<float>(m_x) * CHUNK_WIDTH,
         0.0f,
-        static_cast<float>(m_z * CHUNK_DEPTH)
+        static_cast<float>(m_z) * CHUNK_DEPTH
     ));
     shader.setMat4("model", chunkModelMatrix);
 
