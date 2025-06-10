@@ -19,7 +19,7 @@ This is a personal project for me to further get used C++, especially with libra
  - basic chunks based off a noise function
  - Face culling
  - camera system
- - 
+ - dynamic chunk generation at runtime for infinite worlds
 
 ## Getting Started
 
@@ -29,7 +29,6 @@ This is a personal project for me to further get used C++, especially with libra
 
 ## Future Features
  - mesh optimisations for example greedy meshing
- - Implement dynamic chunk generation at runtime for infinite worlds
  - Lighting
 
 ## Libraries
