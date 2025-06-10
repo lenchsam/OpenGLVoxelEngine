@@ -7,53 +7,52 @@
 #include "Shader.h"
 
 constexpr float faceVertices[] = {
-    //back
-    0.0f, 0.0f, 0.0f,  0.0f, 0.0f,
-    1.0f, 0.0f, 0.0f,  1.0f, 0.0f,
-    1.0f, 1.0f, 0.0f,  1.0f, 1.0f,
-    1.0f, 1.0f, 0.0f,  1.0f, 1.0f,
-    0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
-    0.0f, 0.0f, 0.0f,  0.0f, 0.0f,
+    0.0f, 0.0f, 0.0f,
+    1.0f, 0.0f, 0.0f,
+    1.0f, 1.0f, 0.0f,
+    1.0f, 1.0f, 0.0f,
+    0.0f, 1.0f, 0.0f,
+    0.0f, 0.0f, 0.0f,
 
-    //front
-    0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
-    1.0f, 1.0f, 1.0f,  1.0f, 1.0f,
-    1.0f, 0.0f, 1.0f,  1.0f, 0.0f,
-    1.0f, 1.0f, 1.0f,  1.0f, 1.0f,
-    0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
-    0.0f, 1.0f, 1.0f,  0.0f, 1.0f,
+    // Front face
+    0.0f, 0.0f, 1.0f,
+    1.0f, 1.0f, 1.0f,
+    1.0f, 0.0f, 1.0f,
+    1.0f, 1.0f, 1.0f,
+    0.0f, 0.0f, 1.0f,
+    0.0f, 1.0f, 1.0f,
 
-    //left
-    0.0f, 1.0f, 1.0f,  1.0f, 1.0f,
-    0.0f, 0.0f, 0.0f,  0.0f, 0.0f,
-    0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
-    0.0f, 0.0f, 0.0f,  0.0f, 0.0f,
-    0.0f, 1.0f, 1.0f,  1.0f, 1.0f,
-    0.0f, 0.0f, 1.0f,  0.0f, 1.0f,
+    // Left face
+    0.0f, 1.0f, 1.0f,
+    0.0f, 0.0f, 0.0f,
+    0.0f, 1.0f, 0.0f,
+    0.0f, 0.0f, 0.0f,
+    0.0f, 1.0f, 1.0f,
+    0.0f, 0.0f, 1.0f,
 
-    //right
-    1.0f, 1.0f, 1.0f,  1.0f, 1.0f,
-    1.0f, 1.0f, 0.0f,  1.0f, 0.0f,
-    1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
-    1.0f, 0.0f, 1.0f,  0.0f, 1.0f,
-    1.0f, 1.0f, 1.0f,  1.0f, 1.0f,
-    1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
+    // Right face
+    1.0f, 1.0f, 1.0f,
+    1.0f, 1.0f, 0.0f,
+    1.0f, 0.0f, 0.0f,
+    1.0f, 0.0f, 1.0f,
+    1.0f, 1.0f, 1.0f,
+    1.0f, 0.0f, 0.0f,
 
-    //bottom
-    0.0f, 0.0f, 0.0f,  0.0f, 1.0f,
-    1.0f, 0.0f, 1.0f,  1.0f, 0.0f,
-    1.0f, 0.0f, 0.0f,  1.0f, 1.0f,
-    1.0f, 0.0f, 1.0f,  1.0f, 0.0f,
-    0.0f, 0.0f, 0.0f,  0.0f, 1.0f,
-    0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
+    // Bottom face
+    0.0f, 0.0f, 0.0f,
+    1.0f, 0.0f, 1.0f,
+    1.0f, 0.0f, 0.0f,
+    1.0f, 0.0f, 1.0f,
+    0.0f, 0.0f, 0.0f,
+    0.0f, 0.0f, 1.0f,
 
-    //top
-    0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
-    1.0f, 1.0f, 0.0f,  1.0f, 1.0f,
-    1.0f, 1.0f, 1.0f,  1.0f, 0.0f,
-    0.0f, 1.0f, 1.0f,  0.0f, 0.0f,
-    0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
-    1.0f, 1.0f, 1.0f,  1.0f, 0.0f
+    // Top face
+    0.0f, 1.0f, 0.0f,
+    1.0f, 1.0f, 0.0f,
+    1.0f, 1.0f, 1.0f,
+    0.0f, 1.0f, 1.0f,
+    0.0f, 1.0f, 0.0f,
+    1.0f, 1.0f, 1.0f,
 };
 Chunk::Chunk(int _x, int _z) : m_x(_x), m_z(_z)
 {
@@ -146,18 +145,19 @@ void Chunk::Draw(Shader& shader) {
     }
 
     if (m_VAO == 0 || m_meshVertices.empty()) {
-        return; // Nothing to draw
+        return; 
     }
 
     glm::mat4 chunkModelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(
         static_cast<float>(m_x * CHUNK_WIDTH),
-        0.0f, //not doing vertical chunks
+        0.0f,
         static_cast<float>(m_z * CHUNK_DEPTH)
     ));
     shader.setMat4("model", chunkModelMatrix);
 
     glBindVertexArray(m_VAO);
-    glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(m_meshVertices.size() / 5));
+    //number of vertices is the total size of the vector divided by the size of one vertex (6 floats)
+    glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(m_meshVertices.size() / 6));
     glBindVertexArray(0);
 }
 
@@ -168,73 +168,47 @@ void Chunk::BuildMesh()
     for (int y = 0; y < CHUNK_HEIGHT; ++y) {
         for (int x = 0; x < CHUNK_WIDTH; ++x) {
             for (int z = 0; z < CHUNK_DEPTH; ++z) {
+                //skip air blocks
                 if (!isSolid(x, y, z)) {
-                    continue; //skip air blocks
+                    continue;
                 }
 
-                // The offset for each face is its index (0-5) x 30 (6 vertices * 5 floats).
+                //determine block color
+                glm::vec3 color;
+                BlockID blockType = getBlock(x, y, z);
+                switch (blockType) {
+                case BlockID::GRASS:
+                    color = glm::vec3(0.0f, 1.0f, 0.0f); //green
+                    break;
+                case BlockID::DIRT:
+                    color = glm::vec3(0.5f, 0.25f, 0.0f); //brown
+                    break;
+                default:
+                    color = glm::vec3(0.5f, 0.5f, 0.5f); //default is gray
+                    break;
+                }
 
-                //check each of the 6 faces
-                //back
-                if (!isSolid(x, y, z - 1)) {
-                    for (int i = 0; i < 6; ++i) { // 6 vertices per face
-                        m_meshVertices.push_back(faceVertices[0 * 30 + i * 5 + 0] + x);
-                        m_meshVertices.push_back(faceVertices[0 * 30 + i * 5 + 1] + y);
-                        m_meshVertices.push_back(faceVertices[0 * 30 + i * 5 + 2] + z);
-                        m_meshVertices.push_back(faceVertices[0 * 30 + i * 5 + 3]);
-                        m_meshVertices.push_back(faceVertices[0 * 30 + i * 5 + 4]);
+                //offset for each face is its index (0-5) * 18 (6 vertices * 3 floats).
+                auto addFace = [&](int faceIndex) {
+                    for (int i = 0; i < 6; ++i) { //6 vertices per face
+                        //position
+                        m_meshVertices.push_back(faceVertices[faceIndex * 18 + i * 3 + 0] + x);
+                        m_meshVertices.push_back(faceVertices[faceIndex * 18 + i * 3 + 1] + y);
+                        m_meshVertices.push_back(faceVertices[faceIndex * 18 + i * 3 + 2] + z);
+                        //color
+                        m_meshVertices.push_back(color.r);
+                        m_meshVertices.push_back(color.g);
+                        m_meshVertices.push_back(color.b);
                     }
-                }
-                //front
-                if (!isSolid(x, y, z + 1)) {
-                    for (int i = 0; i < 6; ++i) {
-                        m_meshVertices.push_back(faceVertices[1 * 30 + i * 5 + 0] + x);
-                        m_meshVertices.push_back(faceVertices[1 * 30 + i * 5 + 1] + y);
-                        m_meshVertices.push_back(faceVertices[1 * 30 + i * 5 + 2] + z);
-                        m_meshVertices.push_back(faceVertices[1 * 30 + i * 5 + 3]);
-                        m_meshVertices.push_back(faceVertices[1 * 30 + i * 5 + 4]);
-                    }
-                }
-                //left
-                if (!isSolid(x - 1, y, z)) {
-                    for (int i = 0; i < 6; ++i) {
-                        m_meshVertices.push_back(faceVertices[2 * 30 + i * 5 + 0] + x);
-                        m_meshVertices.push_back(faceVertices[2 * 30 + i * 5 + 1] + y);
-                        m_meshVertices.push_back(faceVertices[2 * 30 + i * 5 + 2] + z);
-                        m_meshVertices.push_back(faceVertices[2 * 30 + i * 5 + 3]);
-                        m_meshVertices.push_back(faceVertices[2 * 30 + i * 5 + 4]);
-                    }
-                }
-                //right
-                if (!isSolid(x + 1, y, z)) {
-                    for (int i = 0; i < 6; ++i) {
-                        m_meshVertices.push_back(faceVertices[3 * 30 + i * 5 + 0] + x);
-                        m_meshVertices.push_back(faceVertices[3 * 30 + i * 5 + 1] + y);
-                        m_meshVertices.push_back(faceVertices[3 * 30 + i * 5 + 2] + z);
-                        m_meshVertices.push_back(faceVertices[3 * 30 + i * 5 + 3]);
-                        m_meshVertices.push_back(faceVertices[3 * 30 + i * 5 + 4]);
-                    }
-                }
-                //bottom
-                if (!isSolid(x, y - 1, z)) {
-                    for (int i = 0; i < 6; ++i) {
-                        m_meshVertices.push_back(faceVertices[4 * 30 + i * 5 + 0] + x);
-                        m_meshVertices.push_back(faceVertices[4 * 30 + i * 5 + 1] + y);
-                        m_meshVertices.push_back(faceVertices[4 * 30 + i * 5 + 2] + z);
-                        m_meshVertices.push_back(faceVertices[4 * 30 + i * 5 + 3]);
-                        m_meshVertices.push_back(faceVertices[4 * 30 + i * 5 + 4]);
-                    }
-                }
-                //top
-                if (!isSolid(x, y + 1, z)) {
-                    for (int i = 0; i < 6; ++i) {
-                        m_meshVertices.push_back(faceVertices[5 * 30 + i * 5 + 0] + x);
-                        m_meshVertices.push_back(faceVertices[5 * 30 + i * 5 + 1] + y);
-                        m_meshVertices.push_back(faceVertices[5 * 30 + i * 5 + 2] + z);
-                        m_meshVertices.push_back(faceVertices[5 * 30 + i * 5 + 3]);
-                        m_meshVertices.push_back(faceVertices[5 * 30 + i * 5 + 4]);
-                    }
-                }
+                    };
+
+                // check all faces
+                if (!isSolid(x, y, z - 1)) addFace(0);
+                if (!isSolid(x, y, z + 1)) addFace(1);
+                if (!isSolid(x - 1, y, z)) addFace(2);
+                if (!isSolid(x + 1, y, z)) addFace(3);
+                if (!isSolid(x, y - 1, z)) addFace(4);
+                if (!isSolid(x, y + 1, z)) addFace(5);
             }
         }
     }
@@ -244,22 +218,21 @@ void Chunk::BuildMesh()
         return;
     }
 
-    //create or update GPU buffers
     if (m_VAO == 0) {
         glGenVertexArrays(1, &m_VAO);
         glGenBuffers(1, &m_VBO);
     }
 
     glBindVertexArray(m_VAO);
-
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
     glBufferData(GL_ARRAY_BUFFER, m_meshVertices.size() * sizeof(float), m_meshVertices.data(), GL_STATIC_DRAW);
 
-    // Position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    // position
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    // Texture coord attribute
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+
+    // colour
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
     glBindVertexArray(0);

@@ -1,11 +1,10 @@
 #version 460 core
 out vec4 FragColor;
 
-in vec2 TexCoord;
-
-uniform sampler2D texture1;
+in vec3 Color;
 
 void main()
 {
-	FragColor = texture(texture1, TexCoord);
+    // alphs = 1 which is opaque
+	FragColor = vec4(Color, 1.0);
 }

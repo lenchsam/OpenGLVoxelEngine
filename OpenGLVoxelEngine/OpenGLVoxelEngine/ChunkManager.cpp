@@ -1,5 +1,6 @@
 #include "ChunkManager.h"
 #include "Chunk.h"
+#include "Camera.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -18,8 +19,26 @@ void ChunkManager::UnloadChunk(Chunk* chunk)
 void ChunkManager::RenderChunks(Shader& shader)
 {
     // get camera position
-    // get chunk that camera is in
-	// calculate which chunks need to be rendered based on camera position
+    glm::vec3 cameraPos = m_camera->Position;
+	// get chunk that camera is in (ignore y so doesnt matter how hih the camera is)
+    int chunkX = static_cast<int>(floor(cameraPos.x / Chunk::CHUNK_WIDTH));
+    int chunkZ = static_cast<int>(floor(cameraPos.z / Chunk::CHUNK_DEPTH));
+
+    Chunk* currentChunk = FindChunk(chunkX, chunkZ);
+
+    for (int offsetZ = -RENDER_DISTANCE; offsetZ <= RENDER_DISTANCE; ++offsetZ) {
+        for (int offsetX = -RENDER_DISTANCE; offsetX <= RENDER_DISTANCE; ++offsetX) {
+            int ChunkX = chunkX + offsetX;
+            int ChunkZ = chunkZ + offsetZ;
+
+            if (!FindChunk(ChunkX, ChunkZ)) {
+			    std::cout << "ChunkX: " << ChunkX << ", ChunkZ: " << ChunkZ << std::endl;
+                Chunk* newChunk = new Chunk(ChunkX, ChunkZ);
+                newChunk->GenerateMesh(m_noise);
+                AddChunk(newChunk);
+            }
+        }
+    }
 
     for (Chunk* chunk : m_chunks) {
         chunk->Draw(shader);

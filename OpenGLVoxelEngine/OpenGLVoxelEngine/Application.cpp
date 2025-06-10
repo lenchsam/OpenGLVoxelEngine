@@ -21,7 +21,7 @@ const unsigned int SCR_HEIGHT = 600;
 
 
 //camera variables
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera(glm::vec3(0.0f, 10.0f, 0.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -120,50 +120,15 @@ int Application::run() {
     //shader
     Shader ourShader("shader.vert", "shader.frag");
 
-    unsigned int texture1;
-    glGenTextures(1, &texture1);
-    glBindTexture(GL_TEXTURE_2D, texture1);
-    // set wrapping parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    // set texture filtering parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    // load image, create texture and generate mipmaps
-    int width, height, nrChannels;
-	stbi_set_flip_vertically_on_load(true); //flip loaded texture's on the y-axis. stb_image flips the texturs on the y-axis by default so I need to flip it back
-    unsigned char* data = stbi_load("Textures/Grass.png", &width, &height, &nrChannels, 0);
-	if (data) // if the image was loaded successfully
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-    stbi_image_free(data);
-
     ourShader.use(); 
 
     FastNoiseLite noise;
 	noise.SetSeed(5);
-    noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
+    noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
 	noise.SetFrequency(0.05f);
     const float noiseThreshold = 0.0f;
 
-    Chunk chunk(0, 0), chunk1(1, 0), chunk2(0, 1), chunk3(1, 1);
-
-	chunk.GenerateMesh(&noise);
-	chunk1.GenerateMesh(&noise);
-	chunk2.GenerateMesh(&noise);
-	chunk3.GenerateMesh(&noise);
-
-    ChunkManager chunkManager;
-	chunkManager.AddChunk(&chunk);
-	chunkManager.AddChunk(&chunk1);
-	chunkManager.AddChunk(&chunk2);
-	chunkManager.AddChunk(&chunk3);
+    ChunkManager chunkManager(&noise, &camera);
 
     // Render loop
     while (!glfwWindowShouldClose(window)) {
@@ -175,9 +140,6 @@ int Application::run() {
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture1);
 
         ourShader.use();
         
