@@ -19,7 +19,7 @@ private:
 	static const unsigned int CHUNK_WIDTH = 16;
 	static const unsigned int CHUNK_HEIGHT = 64;
 	static const unsigned int CHUNK_DEPTH = 16;
-	static const int RENDER_DISTANCE = 5;
+	static const int RENDER_DISTANCE = 10;
 	std::vector<Chunk*> m_chunks;
 
 	FastNoiseLite* m_noise;

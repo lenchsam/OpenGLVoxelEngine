@@ -124,6 +124,15 @@ int Application::run() {
 
     ourShader.use(); 
 
+    //light properties
+    glm::vec3 lightPos(0.0f, 500.0f, 200.0f); //light position
+    glm::vec3 lightColor(1.0f, 1.0f, 1.0f); //white light
+
+    //send data to shader
+    ourShader.setVec3("lightPos", lightPos);
+    ourShader.setVec3("lightColor", lightColor);
+    ourShader.setVec3("viewPos", camera.Position);
+
     FastNoiseLite noise;
 	noise.SetSeed(5);
     noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
@@ -145,7 +154,7 @@ int Application::run() {
 
         ourShader.use();
         
-        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 1000.0f);
         ourShader.setMat4("projection", projection);
 
         glm::mat4 view = camera.GetViewMatrix();

@@ -190,26 +190,30 @@ void Chunk::BuildMesh()
                 }
 
                 //offset for each face is its index (0-5) * 18 (6 vertices * 3 floats).
-                auto addFace = [&](int faceIndex) {
-                    for (int i = 0; i < 6; ++i) { //6 vertices per face
+                auto addFace = [&](int faceIndex, const glm::vec3& normal) {
+                    for (int i = 0; i < 6; ++i) {
                         //position
                         m_meshVertices.push_back(faceVertices[faceIndex * 18 + i * 3 + 0] + x);
                         m_meshVertices.push_back(faceVertices[faceIndex * 18 + i * 3 + 1] + y);
                         m_meshVertices.push_back(faceVertices[faceIndex * 18 + i * 3 + 2] + z);
-                        //color
+                        //colour
                         m_meshVertices.push_back(color.r);
                         m_meshVertices.push_back(color.g);
                         m_meshVertices.push_back(color.b);
+                        //normals
+                        m_meshVertices.push_back(normal.x);
+                        m_meshVertices.push_back(normal.y);
+                        m_meshVertices.push_back(normal.z);
                     }
                     };
 
                 // check all faces
-                if (!isSolid(x, y, z - 1)) addFace(0);
-                if (!isSolid(x, y, z + 1)) addFace(1);
-                if (!isSolid(x - 1, y, z)) addFace(2);
-                if (!isSolid(x + 1, y, z)) addFace(3);
-                if (!isSolid(x, y - 1, z)) addFace(4);
-                if (!isSolid(x, y + 1, z)) addFace(5);
+                if (!isSolid(x, y, z - 1)) addFace(0, glm::vec3(0.0f, 0.0f, -1.0f)); //back
+                if (!isSolid(x, y, z + 1)) addFace(1, glm::vec3(0.0f, 0.0f, 1.0f));  //front
+                if (!isSolid(x - 1, y, z)) addFace(2, glm::vec3(-1.0f, 0.0f, 0.0f)); //left
+                if (!isSolid(x + 1, y, z)) addFace(3, glm::vec3(1.0f, 0.0f, 0.0f));  //right
+                if (!isSolid(x, y - 1, z)) addFace(4, glm::vec3(0.0f, -1.0f, 0.0f)); //bottom
+                if (!isSolid(x, y + 1, z)) addFace(5, glm::vec3(0.0f, 1.0f, 0.0f));  //top
             }
         }
     }
@@ -229,12 +233,15 @@ void Chunk::BuildMesh()
     glBufferData(GL_ARRAY_BUFFER, m_meshVertices.size() * sizeof(float), m_meshVertices.data(), GL_STATIC_DRAW);
 
     // position
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
     // colour
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 
     glBindVertexArray(0);
     m_needsRebuild = false;

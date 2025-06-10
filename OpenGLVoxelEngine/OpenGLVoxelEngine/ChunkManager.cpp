@@ -40,7 +40,6 @@ void ChunkManager::RenderChunks(Shader& shader)
             int ChunkZ = chunkZ + offsetZ;
 
             if (!FindChunk(ChunkX, ChunkZ)) {
-			    std::cout << "ChunkX: " << ChunkX << ", ChunkZ: " << ChunkZ << std::endl;
                 Chunk* newChunk = new Chunk(ChunkX, ChunkZ);
                 newChunk->GenerateMesh(m_noise);
                 AddChunk(newChunk);
