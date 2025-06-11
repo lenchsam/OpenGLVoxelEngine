@@ -102,7 +102,7 @@ void Chunk::setBlock(int x, int y, int z, BlockID blockType)
 
 void Chunk::GenerateMesh(FastNoiseLite* noise)
 {
-    const int baseSurfaceLevel = CHUNK_HEIGHT / 3; // where the average ground level will be
+    const int baseSurfaceLevel = CHUNK_HEIGHT / 5; // where the average ground level will be
     const float terrainAmplitude = (float)CHUNK_HEIGHT / 4.0f;
 
     for (int x = 0; x < CHUNK_WIDTH; ++x) {

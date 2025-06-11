@@ -26,7 +26,7 @@ public:
 	void Draw(Shader& shader);
 
 	static const unsigned int CHUNK_WIDTH = 16;
-	static const unsigned int CHUNK_HEIGHT = 16;
+	static const unsigned int CHUNK_HEIGHT = 128;
 	static const unsigned int CHUNK_DEPTH = 16;
 
 private:

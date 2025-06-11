@@ -21,7 +21,7 @@ const unsigned int SCR_HEIGHT = 600;
 
 
 //camera variables
-Camera camera(glm::vec3(0.0f, 10.0f, 0.0f));
+Camera camera(glm::vec3(0.0f, 100.0f, 0.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -134,9 +134,17 @@ int Application::run() {
     ourShader.setVec3("viewPos", camera.Position);
 
     FastNoiseLite noise;
-	noise.SetSeed(5);
+	noise.SetSeed(1);
     noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
-	noise.SetFrequency(0.05f);
+	noise.SetFrequency(0.02f);
+
+    //fractional brownian motion
+    noise.SetFractalType(FastNoiseLite::FractalType_FBm);
+    noise.SetFractalOctaves(5);
+    noise.SetFractalLacunarity(2.0f);
+    noise.SetFractalGain(0.4f); //smaller = smoother
+    noise.SetFractalWeightedStrength(0.5f);
+
     const float noiseThreshold = 0.0f;
 
     ChunkManager chunkManager(&noise, &camera);
