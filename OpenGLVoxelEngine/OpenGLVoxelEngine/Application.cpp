@@ -115,6 +115,18 @@ Application::Application()
     //face culling
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
+
+	noise = new FastNoiseLite();
+    noise->SetSeed(1);
+    noise->SetNoiseType(FastNoiseLite::NoiseType_Perlin);
+    noise->SetFrequency(0.02f);
+
+    //fractional brownian motion
+    noise->SetFractalType(FastNoiseLite::FractalType_FBm);
+    noise->SetFractalOctaves(5);
+    noise->SetFractalLacunarity(2.0f);
+    noise->SetFractalGain(0.4f); //smaller = smoother
+    noise->SetFractalWeightedStrength(0.5f);
 }
 
 int Application::run() {
@@ -133,21 +145,9 @@ int Application::run() {
     ourShader.setVec3("lightColor", lightColor);
     ourShader.setVec3("viewPos", camera.Position);
 
-    FastNoiseLite noise;
-	noise.SetSeed(1);
-    noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
-	noise.SetFrequency(0.02f);
-
-    //fractional brownian motion
-    noise.SetFractalType(FastNoiseLite::FractalType_FBm);
-    noise.SetFractalOctaves(5);
-    noise.SetFractalLacunarity(2.0f);
-    noise.SetFractalGain(0.4f); //smaller = smoother
-    noise.SetFractalWeightedStrength(0.5f);
-
     const float noiseThreshold = 0.0f;
 
-    ChunkManager chunkManager(&noise, &camera);
+    ChunkManager chunkManager(std::move(noise), &camera);
 
     // Render loop
     while (!glfwWindowShouldClose(window)) {

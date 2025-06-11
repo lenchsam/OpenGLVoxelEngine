@@ -12,5 +12,7 @@ private:
 	static void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
 
 	GLFWwindow* window;
+
+	class FastNoiseLite* noise;
 };
 
