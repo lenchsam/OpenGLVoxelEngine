@@ -100,7 +100,7 @@ void Chunk::setBlock(int x, int y, int z, BlockID blockType)
 	m_blocks[x][y][z].SetBlockType(blockType);
 }
 
-void Chunk::GenerateMesh(FastNoiseLite* noise)
+void Chunk::GenerateMesh(std::shared_ptr<FastNoiseLite> noise)
 {
     const int baseSurfaceLevel = CHUNK_HEIGHT / 5; // where the average ground level will be
     const float terrainAmplitude = (float)CHUNK_HEIGHT / 4.0f;

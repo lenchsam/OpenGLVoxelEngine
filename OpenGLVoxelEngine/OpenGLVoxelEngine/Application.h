@@ -1,6 +1,8 @@
 #pragma once
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <memory>
+
 class Application
 {
 public:
@@ -11,8 +13,8 @@ private:
 	void processInput(GLFWwindow* window);
 	static void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
 
-	GLFWwindow* window;
+	std::unique_ptr<GLFWwindow, decltype(&glfwDestroyWindow)> window{ nullptr, glfwDestroyWindow };
 
-	class FastNoiseLite* noise;
+	std::shared_ptr<class FastNoiseLite> noise;
 };
 

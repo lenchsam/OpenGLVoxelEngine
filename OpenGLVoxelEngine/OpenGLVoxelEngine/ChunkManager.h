@@ -9,7 +9,7 @@ class FastNoiseLite;
 class ChunkManager  
 {  
 public:  
-    ChunkManager(FastNoiseLite* noise, Camera* camera) : m_noise(noise), m_camera(camera) {}  
+    ChunkManager(std::shared_ptr<FastNoiseLite> noise, Camera* camera) : m_noise(noise), m_camera(camera) {}
     ~ChunkManager();  
     void AddChunk(Chunk* chunk);  
     void UnloadChunk(Chunk* chunk);  
@@ -23,6 +23,6 @@ private:
     static const int RENDER_DISTANCE = 10;  
     std::vector<Chunk*> m_chunks;  
 
-    FastNoiseLite* m_noise;  
-    Camera* m_camera;  
+    std::shared_ptr<FastNoiseLite> m_noise;    
+    Camera* m_camera;
 };

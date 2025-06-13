@@ -83,18 +83,19 @@ Application::Application()
 #endif
 
     //create window
-    window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+    window.reset(glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL));
+
     if (window == NULL) {
         std::cerr << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         return;
     }
 
-    glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    glfwSetCursorPosCallback(window, mouse_callback);
+    glfwMakeContextCurrent(window.get());
+    glfwSetFramebufferSizeCallback(window.get(), framebuffer_size_callback);
+    glfwSetCursorPosCallback(window.get(), mouse_callback);
 
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetInputMode(window.get(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     // Initialize GLAD
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -107,7 +108,7 @@ Application::Application()
     std::cout << "Initialized OpenGL version: " << glGetString(GL_VERSION) << std::endl;
 
     int screenWidth, screenHeight;
-    glfwGetFramebufferSize(window, &screenWidth, &screenHeight);
+    glfwGetFramebufferSize(window.get(), &screenWidth, &screenHeight);
     glViewport(0, 0, screenWidth, screenHeight);
 
     glEnable(GL_DEPTH_TEST);
@@ -116,7 +117,7 @@ Application::Application()
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
 
-	noise = new FastNoiseLite();
+	noise = std::make_shared<FastNoiseLite>();
     noise->SetSeed(1);
     noise->SetNoiseType(FastNoiseLite::NoiseType_Perlin);
     noise->SetFrequency(0.02f);
@@ -150,12 +151,12 @@ int Application::run() {
     ChunkManager chunkManager(std::move(noise), &camera);
 
     // Render loop
-    while (!glfwWindowShouldClose(window)) {
+    while (!glfwWindowShouldClose(window.get())) {
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        processInput(window);
+        processInput(window.get());
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -170,7 +171,7 @@ int Application::run() {
 
         chunkManager.RenderChunks(ourShader);
 
-        glfwSwapBuffers(window);
+        glfwSwapBuffers(window.get());
         glfwPollEvents();
     }
 

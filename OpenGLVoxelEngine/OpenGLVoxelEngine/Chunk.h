@@ -2,6 +2,7 @@
 #include "BlockTypes.h"
 #include "Block.h"
 #include <vector>
+#include <memory>
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
@@ -19,7 +20,7 @@ public:
 	BlockID getBlock(int x, int y, int z) const;
 	void setBlock(int x, int y, int z, BlockID blockType);
 
-	void GenerateMesh(FastNoiseLite* noise);
+	void GenerateMesh(std::shared_ptr<FastNoiseLite> noise);
 	
 	glm::ivec2 getPosition();
 
