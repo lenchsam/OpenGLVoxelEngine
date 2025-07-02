@@ -14,7 +14,8 @@ A voxel engine similar to minecraft coded in C++ using OpenGL. It is in early de
 ## About
 This is a personal project for me to further get used C++, especially with libraries. When complete, this will feature a procedurally generated map, hopefully in the same style to minecraft.
 ## Useful Links
-
+ - [Chunks](https://github.com/lenchsam/OpenGLVoxelEngine/blob/main/OpenGLVoxelEngine/OpenGLVoxelEngine/Chunk.cpp)
+ - [Terrain Generation - RenderChunks function!](https://github.com/lenchsam/OpenGLVoxelEngine/blob/main/OpenGLVoxelEngine/OpenGLVoxelEngine/ChunkManager.cpp)
 ## Features
  - basic chunks based off a noise function
  - Face culling
