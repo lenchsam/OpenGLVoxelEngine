@@ -22,6 +22,7 @@ void ChunkManager::AddChunk(Chunk* chunk)
 void ChunkManager::UnloadChunk(Chunk* chunk)
 {
     m_chunks.erase(std::remove(m_chunks.begin(), m_chunks.end(), chunk), m_chunks.end());
+    delete chunk;
 }
 
 void ChunkManager::RenderChunks(Shader& shader)  
@@ -44,6 +45,17 @@ void ChunkManager::RenderChunks(Shader& shader)
             }  
         }  
     }  
+
+	//identify and remove chunks that are too far away
+    for (Chunk* chunk : m_chunks) {
+        glm::ivec2 pos = chunk->getPosition();
+        int distanceX = abs(pos.x - chunkX);
+        int distanceZ = abs(pos.y - chunkZ);
+
+        if (distanceX > RENDER_DISTANCE || distanceZ > RENDER_DISTANCE) {
+            UnloadChunk(chunk);
+        }
+    }
 
     for (Chunk* chunk : m_chunks) {  
         chunk->Draw(shader);  
