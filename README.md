@@ -10,6 +10,7 @@ A voxel engine similar to minecrafts procedural generation coded in C++ using Op
   * [Features](#features)
   * [Getting Started](#getting-started)
     + [Requirements](#requirements)
+    + [Setup](#setup)
   * [Future Features](#future-features)
   * [Libraries](#libraries)
 - [Contact](#contact)
@@ -34,6 +35,13 @@ This is a personal project for me to further get used C++, especially with libra
 ### Requirements
 
  - Visual Studio 2022
+ - Desktop development with C++ for visual studio.
+
+### Setup
+ 1. Download the repository. 
+ 2. Extract the folder.
+ 3. Open the **OpenGLVoxelEngine.sln** file located in `OpenGLVoxelEngine -> OpenGLVoxelEngine`.
+ 4. Experiment with and explore the project!
 
 ## Future Features
  - Multithreading to speed up procedural generation
