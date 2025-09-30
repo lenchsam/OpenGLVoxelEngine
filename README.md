@@ -1,5 +1,8 @@
 # OpenGLVoxelEngine
-A voxel engine similar to minecraft coded in C++ using OpenGL. It is in early development
+A voxel engine similar to minecrafts procedural generation coded in C++ using OpenGL.
+
+
+
 ## Table of Contents
 - [OpenGLVoxelEngine](#openglvoxelengine)
   * [About](#about)
@@ -11,11 +14,15 @@ A voxel engine similar to minecraft coded in C++ using OpenGL. It is in early de
   * [Libraries](#libraries)
 - [Contact](#contact)
 
+<img width="796" height="595" alt="image" src="https://github.com/user-attachments/assets/ea6819da-1888-4498-9edb-0a142ff90e8b" />
+
 ## About
-This is a personal project for me to further get used C++, especially with libraries. When complete, this will feature a procedurally generated map, hopefully in the same style to minecraft.
+This is a personal project for me to further get used C++, especially with libraries. It is also to help me start my graphics programming journey and improve my knowledge on optimisation and PCG. Development is in progress, but slowly due to my masters degree.
 ## Useful Links
  - [Chunks](https://github.com/lenchsam/OpenGLVoxelEngine/blob/main/OpenGLVoxelEngine/OpenGLVoxelEngine/Chunk.cpp)
  - [Terrain Generation - RenderChunks function!](https://github.com/lenchsam/OpenGLVoxelEngine/blob/main/OpenGLVoxelEngine/OpenGLVoxelEngine/ChunkManager.cpp)
+ - [Shader.cpp](https://github.com/lenchsam/OpenGLVoxelEngine/blob/main/OpenGLVoxelEngine/OpenGLVoxelEngine/Shader.cpp)
+ - [Fragment Shader (phong lighting)](https://github.com/lenchsam/OpenGLVoxelEngine/blob/main/OpenGLVoxelEngine/OpenGLVoxelEngine/shader.frag)
 ## Features
  - basic chunks based off a noise function
  - Face culling
@@ -29,13 +36,12 @@ This is a personal project for me to further get used C++, especially with libra
  - Visual Studio 2022
 
 ## Future Features
- - mesh optimisations for example greedy meshing
- - Lighting
+ - Multithreading to speed up procedural generation
+ - frustum culling
 
 ## Libraries
  - GLFW
  - GLAD
- - stb_image.h
  - GLM
  - FastNoiseLite
 
